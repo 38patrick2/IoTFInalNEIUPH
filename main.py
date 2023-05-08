@@ -7,26 +7,21 @@ temperatures = []
 
 def on_message(client, userdata, msg):
    print("Topic: "+msg.topic+" | Message: "+str(msg.payload.decode()))
-   if msg.topic == "testtopic/1":
-      try:
-         temperatures.append(int(msg.payload.decode()))
-      except ValueError:
-         pass
+   if msg.topic == "temp/result":
+      temperatures.append(msg.payload.decode())
+      print(temperatures)
+
       
 client = mqtt_connect()
 client.on_message = on_message
 client.loop_start()
 
-client.subscribe("testtopic/1")
+client.subscribe("temp/result")
 time.sleep(2)
 
 # Function to get current temperature from Raspberry Pi
 def get_current_temp():
-   # Code to get current temperature from Raspberry Pi and publish to MQTT topic
-   # ...
-   # Publish temperature to topic "temp/current"
-   # client.publish("temp/current", "25.5")
-   client.publish("testtopic/1", "200")
+   client.publish("temp/get")
 
 # Function to display average temperature based on list of prior temperatures
 def display_avg_temp():
